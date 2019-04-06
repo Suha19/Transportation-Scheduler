@@ -18,6 +18,17 @@
 </head>
 
 <body>
+        <div class="container">
+                <div class="row">
+                  <div class="col-sm" ><h3> Flight name</h3><h6 id="name-display"> </h6></div>
+                  <div class="col-sm" ><h3>Destination</h3><h6 id="destination-display"></h6></div>
+                  <div class="col-sm" ><h3>First Flight</h3><h6 id="first-flight-display"></h6></div>
+                  <div class="col-sm" ><h3>Next Flight</h3><h6 id="next-flight-display"></h6></div>
+                  <div class="col-sm" ><h3>Frequency Display</h3><h6 id="frequency-display"></h6></div>
+                </div>
+              </div>
+              
+        
     <div class="container">
         <br>
         <div class="row">
@@ -30,19 +41,23 @@
 
                         <form role="form">
                             <div class="form-group row">
-                                <label for="name-input">Airport Name:</label>
+                                <label for="name-input">flight Name</label>
                                 <input class="form-control" id="name-input" type="text">
                             </div>
                             <div class="form-group row">
-                                <label for="destination-input">Destination:</label>
+                                <label for="destination-input">Destination</label>
                                 <input class="form-control" id="destination-input" type="text">
                             </div>
                             <div class="form-group row">
-                                <label for="flight-time-input">First flight Time(HH:mm-military time):</label>
-                                <input class="form-control" id="flight-input" type="time">
+                                <label for="first-flight-input">First flight Time(HH:mm-military time)</label>
+                                <input class="form-control" id="first-flight-input" type="time">
                             </div>
                             <div class="form-group row">
-                                <label for="frequency-input">Frequency(min):</label>
+                                    <label for="next-flight-input">Next flight Time(HH:mm-military time)</label>
+                                    <input class="form-control" id="next-flight-input" type="time">
+                                </div>
+                            <div class="form-group row">
+                                <label for="frequency-input">Frequency(min)</label>
                                 <input class="form-control" id="frequency-input" type="time">
                             </div>
                             <button class="btn btn-default" id="add-flight" type="submit">Submit</button>
@@ -71,7 +86,8 @@
 
                 var name = "";
                 var destination = "";
-                var time = "";
+                var firstFlight = "";
+                var nextFlight = "";
                 var frequency = "";
 
                 $("#add-flight").on("click", function (event) {
@@ -79,24 +95,33 @@
 
                     name = $("#name-input").val().trim();
                     destination = $("#destination-input").val().trim();
-                    time = $("#flight-input").val().trim();
+                    firstFlight = $("#first-flight-input").val().trim();
+                    nextFlight = $("#next-flight-input").val().trim();
                     frequency = $("#frequency-input").val().trim();
-                    console.log(name)
-                    database.ref().set({
+                
+                    database.ref().push({
                         name: name,
                         destination: destination,
-                        time: time,
+                        firstFlight: firstFlight,
+                        nextFlight: nextFlight,
                         frequency: frequency
                     });
                 });
 
-                database.ref().on("value", function (snapshot) {
-                    console.log(snapshot.val());
+                database.ref().on("child_added", function (childSnapshot) {
+                    console.log(childSnapshot.val());
 
-                    console.log(snapshot.val().name);
-                    console.log(snapshot.val().destination);
-                    console.log(snapshot.val().time);
-                    console.log(snapshot.val().frequency);
+                    console.log(childSnapshot.val().name);
+                    console.log(childSnapshot.val().destination);
+                    console.log(childSnapshot.val().firstFlight);
+                    console.log(childSnapshot.val().nextFlight);
+                    console.log(childSnapshot.val().frequency);
+
+                    $("#name-display").text(childSnapshot.val().name);
+                    $("#destination-display").text(childSnapshot.val().destination);
+                    $("#first-flight-display").text(childSnapshot.val().firstFlight);
+                    $("#next-flight-display").text(childSnapshot.val().nextFlight);
+                    $("#frequency-display").text(childSnapshot.val().frequency);
 
                 }, function (errorObject) {
                     console.log("The read failed: " + errorObject.code);
