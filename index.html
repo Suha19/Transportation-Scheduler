@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>Airport database</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap File -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- css -->
+    <!-- <link rel="stylesheet" type="text/css" href="./assets/css/style.css"> -->
+
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card card-default">
+                    <div class="card-header">
+                        Add Flight
+                    </div>
+                    <div class="card-body">
+
+                        <form role="form">
+                            <div class="form-group row">
+                                <label for="name-input">Airport Name:</label>
+                                <input class="form-control" id="name-input" type="text">
+                            </div>
+                            <div class="form-group row">
+                                <label for="destination-input">Destination:</label>
+                                <input class="form-control" id="destination-input" type="text">
+                            </div>
+                            <div class="form-group row">
+                                <label for="flight-time-input">First flight Time(HH:mm-military time):</label>
+                                <input class="form-control" id="flight-input" type="time">
+                            </div>
+                            <div class="form-group row">
+                                <label for="frequency-input">Frequency(min):</label>
+                                <input class="form-control" id="frequency-input" type="time">
+                            </div>
+                            <button class="btn btn-default" id="add-flight" type="submit">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+            <!-- Script -->
+            <script>
+                // Initialize Firebase and change the values of the config values with your own Firebase config values.
+                var config = {
+                    apiKey: "AIzaSyB2ijP05RlCgJhIIfgGoMALaGim0LZzRAQ",
+                    authDomain: "transportation-scheduler-abe4d.firebaseapp.com",
+                    databaseURL: "https://transportation-scheduler-abe4d.firebaseio.com",
+                    projectId: "transportation-scheduler-abe4d",
+                    storageBucket: "transportation-scheduler-abe4d.appspot.com",
+                    messagingSenderId: "482302185278"
+                };
+
+                firebase.initializeApp(config);
+
+                // Create a variable to reference the database
+                var database = firebase.database();
+
+                var name = "";
+                var destination = "";
+                var time = "";
+                var frequency = "";
+
+                $("#add-flight").on("click", function (event) {
+                    event.preventDefault();
+
+                    name = $("#name-input").val().trim();
+                    destination = $("#destination-input").val().trim();
+                    time = $("#flight-input").val().trim();
+                    frequency = $("#frequency-input").val().trim();
+                    console.log(name)
+                    database.ref().set({
+                        name: name,
+                        destination: destination,
+                        time: time,
+                        frequency: frequency
+                    });
+                });
+
+                database.ref().on("value", function (snapshot) {
+                    console.log(snapshot.val());
+
+                    console.log(snapshot.val().name);
+                    console.log(snapshot.val().destination);
+                    console.log(snapshot.val().time);
+                    console.log(snapshot.val().frequency);
+
+                }, function (errorObject) {
+                    console.log("The read failed: " + errorObject.code);
+                });
+            </script>
+
+</body>
+
+</html>
