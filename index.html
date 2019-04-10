@@ -13,22 +13,44 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- css -->
-    <!-- <link rel="stylesheet" type="text/css" href="./assets/css/style.css"> -->
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
 
 </head>
 
 <body>
-        <div class="container">
-                <div class="row">
-                  <div class="col-sm" ><h3> Flight name</h3><h6 id="name-display"> </h6></div>
-                  <div class="col-sm" ><h3>Destination</h3><h6 id="destination-display"></h6></div>
-                  <div class="col-sm" ><h3>First Flight</h3><h6 id="first-flight-display"></h6></div>
-                  <div class="col-sm" ><h3>Next Flight</h3><h6 id="next-flight-display"></h6></div>
-                  <div class="col-sm" ><h3>Frequency Display</h3><h6 id="frequency-display"></h6></div>
-                </div>
-              </div>
-              
-        
+    <header>Airports in the United States</header>
+    <table class="container">
+        <thead>
+        <tr class="row">
+            <th class="col-sm">
+                <h4> Flight name</h4>
+                <!-- < id="name-display">  -->
+            </th>
+            <th class="col-sm">
+                <h4>Destination</h4>
+                <!-- <h6 id="destination-display"></h6> -->
+            </th>
+            <th class="col-sm">
+                <h4>Frequency </h4>
+                <!-- <h6 id="frequency-display"></h6> -->
+            </th>
+            <th class="col-sm">
+                <h4>Next Flight</h4>
+                <!-- <h6 id="next-flight-display"></h6> -->
+            </th>
+            <th class="col-sm">
+                <h4>Minutes Away</h4>
+                <!-- <h6 id="minutesAway-display"></h6> -->
+            </th>
+        </tr>
+
+    </thead>
+    <tbody>
+
+    </tbody>
+    </table>
+
+
     <div class="container">
         <br>
         <div class="row">
@@ -53,23 +75,20 @@
                                 <input class="form-control" id="first-flight-input" type="time">
                             </div>
                             <div class="form-group row">
-                                    <label for="next-flight-input">Next flight Time(HH:mm-military time)</label>
-                                    <input class="form-control" id="next-flight-input" type="time">
-                                </div>
-                            <div class="form-group row">
                                 <label for="frequency-input">Frequency(min)</label>
-                                <input class="form-control" id="frequency-input" type="time">
+                                <input class="form-control" id="frequency-input" type="number">
                             </div>
-                            <button class="btn btn-default" id="add-flight" type="submit">Submit</button>
+                            <button class="btn" id="add-flight" type="submit">Submit</button>
                         </form>
                     </div>
                 </div>
             </div>
-
+            <!-- Moment.js -->
+            <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+            <!-- firebase -->
             <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
             <!-- Script -->
             <script>
-                // Initialize Firebase and change the values of the config values with your own Firebase config values.
                 var config = {
                     apiKey: "AIzaSyB2ijP05RlCgJhIIfgGoMALaGim0LZzRAQ",
                     authDomain: "transportation-scheduler-abe4d.firebaseapp.com",
@@ -81,47 +100,68 @@
 
                 firebase.initializeApp(config);
 
-                // Create a variable to reference the database
                 var database = firebase.database();
 
-                var name = "";
+                var flightName = "";
                 var destination = "";
-                var firstFlight = "";
-                var nextFlight = "";
                 var frequency = "";
+                var firstFlight = "";
+              
+
+
 
                 $("#add-flight").on("click", function (event) {
                     event.preventDefault();
 
-                    name = $("#name-input").val().trim();
+                    flightName = $("#name-input").val().trim();
                     destination = $("#destination-input").val().trim();
-                    firstFlight = $("#first-flight-input").val().trim();
-                    nextFlight = $("#next-flight-input").val().trim();
                     frequency = $("#frequency-input").val().trim();
-                
+                    firstFlight = $("#first-flight-input").val().trim();
+                   
                     database.ref().push({
-                        name: name,
+                        flightName: flightName,
                         destination: destination,
+                        frequency: frequency,
                         firstFlight: firstFlight,
-                        nextFlight: nextFlight,
-                        frequency: frequency
+
                     });
                 });
 
                 database.ref().on("child_added", function (childSnapshot) {
-                    console.log(childSnapshot.val());
+                   
+                    var flightN = (childSnapshot.val().flightName);
+                    var destin = (childSnapshot.val().destination);
+                    var freq = (childSnapshot.val().frequency);
+                    var firstF = (childSnapshot.val().firstFlight);
+                  
+                  
+                    var firstfligthConverted = moment(firstFlight, "HH:mm").subtract(1, "years");
+                    console.log(firstfligthConverted);
 
-                    console.log(childSnapshot.val().name);
-                    console.log(childSnapshot.val().destination);
-                    console.log(childSnapshot.val().firstFlight);
-                    console.log(childSnapshot.val().nextFlight);
-                    console.log(childSnapshot.val().frequency);
+                    var currentTime = moment();
+                    console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
 
-                    $("#name-display").text(childSnapshot.val().name);
-                    $("#destination-display").text(childSnapshot.val().destination);
-                    $("#first-flight-display").text(childSnapshot.val().firstFlight);
-                    $("#next-flight-display").text(childSnapshot.val().nextFlight);
-                    $("#frequency-display").text(childSnapshot.val().frequency);
+                    var diffTime = moment().diff(moment(firstfligthConverted), "minutes");
+                    console.log("DIFFERENCE IN TIME: " + diffTime);
+
+                    var tRemainder = diffTime % freq;
+                    console.log(tRemainder);
+
+                    //  Minute Until Train
+                    var tMinutesTillFlight = freq - tRemainder;
+                    console.log("MINUTES TILL TRAIN: " + tMinutesTillFlight);
+
+                    // Next Train
+                    var nextFlight = moment().add(tMinutesTillFlight, "minutes");
+                    console.log("ARRIVAL TIME: " + moment(nextFlight).format("hh:mm"));
+
+                    var newTable = $("<tr>")
+                    newTable.append($("<td>").text(flightN).addClass("col-sm"))
+                    newTable.append($("<td>").text(destin).addClass("col-sm"))
+                    newTable.append($("<td>").text(freq).addClass("col-sm"))
+                    newTable.append($("<td>").text(nextFlight).addClass("col-sm"))
+                    newTable.append($("<td>").text(tMinutesTillFlight).addClass("col-sm"))
+                    $("tbody").append(newTable)
 
                 }, function (errorObject) {
                     console.log("The read failed: " + errorObject.code);

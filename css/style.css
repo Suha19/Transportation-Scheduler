@@ -1,0 +1,15 @@
+body {
+    background-color: rgb(204, 204, 170);
+    margin: auto;
+  }
+  header {
+    font-weight: bold;
+    font-size: 35px;
+    text-align: center;
+    line-height: 3em;
+    color: rgb(112, 4, 4);
+  }
+  .container{
+      width:900px;
+  }
+ 
