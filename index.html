@@ -134,14 +134,15 @@
                     var freq = (childSnapshot.val().frequency);
                     var firstF = (childSnapshot.val().firstFlight);
                   
-                  
-                    var firstfligthConverted = moment(firstFlight, "HH:mm").subtract(1, "years");
+                    var firstfligthConverted = moment(firstF, "HH:mm").subtract(1, "years").format('HH:mm');
+                    // var firstfligthConverted = moment(firstFlight, "HH:mm").subtract(1, "years");
                     console.log(firstfligthConverted);
 
                     var currentTime = moment();
                     console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
 
-                    var diffTime = moment().diff(moment(firstfligthConverted), "minutes");
+                    var diffTime = moment().diff(moment(firstfligthConverted, 'HH:mm'), "minutes");
+                    // var diffTime = moment().diff(moment(firstfligthConverted), "minutes");
                     console.log("DIFFERENCE IN TIME: " + diffTime);
 
                     var tRemainder = diffTime % freq;
@@ -155,7 +156,9 @@
                     var nextFlight = moment().add(tMinutesTillFlight, "minutes");
                     console.log("ARRIVAL TIME: " + moment(nextFlight).format("hh:mm"));
 
-                    var newTable = $("<tr>")
+                    // var newTable = $("<tr>")
+                    var newTable = $("<tr>").addClass('row')
+
                     newTable.append($("<td>").text(flightN).addClass("col-sm"))
                     newTable.append($("<td>").text(destin).addClass("col-sm"))
                     newTable.append($("<td>").text(freq).addClass("col-sm"))
