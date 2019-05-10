@@ -6,6 +6,8 @@ In this assignment, I created a flights schedule application that incorporates F
 
 #Getting Started
 Here's a preview of the train scheduling application:
+![image](https://user-images.githubusercontent.com/47680905/57544727-e41f1980-731d-11e9-9595-b3be5bc3aaeb.png)
+![image](https://user-images.githubusercontent.com/47680905/57544755-f305cc00-731d-11e9-8065-ce8b5fce33dd.png)
 
 
 Click on the link to see the completed assignment:
